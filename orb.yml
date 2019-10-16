@@ -26,7 +26,7 @@ commands:
     description: Run Flog
     parameters:
       options:
-        default:
+        default: ""
         description: CLI options
         type: string
     steps:
@@ -73,7 +73,7 @@ jobs:
         description: executor for flog
         type: executor
       options:
-        default:
+        default: ""
         description: CLI options
         type: string
       version:
