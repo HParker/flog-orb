@@ -1,0 +1,88 @@
+# This code is licensed from CircleCI to the user under the MIT license. See
+# https://circleci.com/orbs/registry/licensing for details.
+version: 2.1
+description: |
+  Run Flog on your ruby code in an orb 🔮
+  Contribute at: https://github.com/HParker/flog-orb
+
+commands:
+  install-flog:
+    description: Install Flog
+    parameters:
+      version:
+        default: ""
+        description: Flog gem version
+        type: string
+    steps:
+    - run:
+        command: |
+          if [ -z "<< parameters.version >>" ]; then
+            gem install flog
+          else
+            gem install flog --version "<< parameters.version >>"
+          fi
+        name: Install Flog << parameters.version >>
+  run-flog:
+    description: Run Flog
+    parameters:
+      options:
+        default:
+        description: CLI options
+        type: string
+    steps:
+    - run: flog << parameters.options >>
+
+examples:
+  flog:
+    description: |
+      Run Flog
+    usage:
+      orbs:
+        flog: hparker/flog@x.y.z
+      version: 2.1
+      workflows:
+        test:
+          jobs:
+          - flog/flog
+        version: 2
+  flog-version:
+    description: |
+      Run specific version of Flog
+    usage:
+      orbs:
+        flog: hparker/flog@x.y.z
+      version: 2.1
+      workflows:
+        test:
+          jobs:
+          - flog/flog:
+              version: 2.12.1
+        version: 2
+
+executors:
+  ruby:
+    docker:
+    - image: rubylang/ruby:latest
+jobs:
+  flog:
+    description: Checkout code and run Flog
+    executor: << parameters.executor >>
+    parameters:
+      executor:
+        default: ruby
+        description: executor for flog
+        type: executor
+      options:
+        default:
+        description: CLI options
+        type: string
+      version:
+        default: ""
+        description: Flog version
+        type: string
+    steps:
+    - checkout
+    - install-flog:
+        version: << parameters.version >>
+    - run-flog:
+        options: << parameters.options >>
